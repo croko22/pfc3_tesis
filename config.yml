@@ -1,0 +1,198 @@
+# Configuration for GSPO-based Unit Test Generation and Refinement System
+
+# Paths
+paths:
+  # Defects4J benchmark location
+  defects4j_home: "/path/to/defects4j"
+  # EvoSuite jar file
+  evosuite_jar: "/path/to/evosuite-master-1.2.0.jar"
+  # PIT (mutation testing) jar
+  pit_jar: "/path/to/pitest-command-line.jar"
+  # Working directory for experiments
+  workspace: "./workspace"
+  # Output directory for results
+  output_dir: "./results"
+  # Checkpoints directory for model saving
+  checkpoints_dir: "./checkpoints"
+
+# EvoSuite Configuration
+evosuite:
+  # Time budget per class in seconds
+  search_budget: 120
+  # Coverage criterion
+  criterion: "BRANCH"
+  # Assertion generation
+  assertions: true
+  # Minimize test suite
+  minimize: true
+  # Additional EvoSuite parameters
+  extra_params: ""
+
+# Defects4J Configuration
+defects4j:
+  # Projects to use from Defects4J
+  projects:
+    - "Chart"
+    - "Closure"
+    - "Lang"
+    - "Math"
+    - "Time"
+  # Bug IDs to include (empty = all bugs)
+  bug_ids: []
+  # Maximum number of bugs per project (0 = unlimited)
+  max_bugs_per_project: 5
+
+# LLM Configuration
+llm:
+  # Model name (HuggingFace model or local path)
+  model_name: "codellama/CodeLlama-7b-Instruct-hf"
+  # Use LoRA for efficient fine-tuning
+  use_lora: true
+  # LoRA parameters
+  lora:
+    r: 16 # Rank of LoRA matrices
+    lora_alpha: 32
+    lora_dropout: 0.05
+    target_modules:
+      - "q_proj"
+      - "v_proj"
+      - "k_proj"
+      - "o_proj"
+    bias: "none"
+  # Generation parameters
+  generation:
+    max_length: 2048
+    temperature: 0.7
+    top_p: 0.9
+    do_sample: true
+    num_return_sequences: 1
+  # Batch size for inference
+  batch_size: 4
+  # Device
+  device: "cuda" # or "cpu"
+
+# GSPO Configuration
+gspo:
+  # Learning rate
+  learning_rate: 1.0e-5
+  # Number of training epochs
+  num_epochs: 3
+  # Batch size for training
+  batch_size: 8
+  # Gradient accumulation steps
+  gradient_accumulation_steps: 4
+  # Clip ratio for PPO-style clipping
+  clip_ratio: 0.2
+  # KL divergence penalty coefficient
+  kl_coef: 0.1
+  # Value function coefficient (if using value network)
+  vf_coef: 0.1
+  # Entropy coefficient for exploration
+  entropy_coef: 0.01
+  # Maximum gradient norm for clipping
+  max_grad_norm: 1.0
+  # Gamma for advantage estimation
+  gamma: 0.99
+  # Lambda for GAE
+  gae_lambda: 0.95
+  # Number of optimization steps per batch
+  num_opt_steps: 1
+  # Use advantage normalization
+  normalize_advantages: true
+  # Warmup steps
+  warmup_steps: 100
+  # Logging interval
+  log_interval: 10
+  # Save interval
+  save_interval: 500
+
+# Reward Function Configuration
+reward:
+  # Weights for different components
+  weights:
+    # Maintainability metrics (higher = better)
+    test_smells: -0.3 # Negative because fewer smells is better
+    cyclomatic_complexity: -0.2 # Negative because lower complexity is better
+    readability: 0.15 # Positive for better readability
+
+    # Effectiveness metrics (higher = better)
+    branch_coverage: 0.25
+    mutation_score: 0.25
+    compilation: 0.15 # Whether test compiles and runs
+
+  # Penalty for compilation/execution failures
+  failure_penalty: -1.0
+
+  # Normalization bounds for metrics
+  normalization:
+    cyclomatic_complexity:
+      min: 1
+      max: 50
+    test_smells:
+      min: 0
+      max: 10
+
+# Metrics Configuration
+metrics:
+  # Test smells to detect
+  test_smells:
+    - "Assertion Roulette"
+    - "Eager Test"
+    - "Mystery Guest"
+    - "Resource Optimism"
+    - "Verbose Test"
+    - "Sleepy Test"
+    - "Duplicate Assert"
+    - "Unknown Test"
+    - "Ignored Test"
+    - "Empty Test"
+
+  # Code complexity metrics
+  complexity:
+    - "cyclomatic_complexity"
+    - "cognitive_complexity"
+    - "lines_of_code"
+
+  # Coverage metrics
+  coverage:
+    - "branch_coverage"
+    - "line_coverage"
+    - "method_coverage"
+
+  # Mutation testing
+  mutation:
+    timeout: 300 # seconds
+    mutators: "ALL" # or specific mutator groups
+
+# Experiment Configuration
+experiment:
+  # Random seed for reproducibility
+  seed: 42
+  # Number of refinement iterations
+  num_refinement_iterations: 1
+  # Compare against baseline LLM (no GSPO)
+  include_baseline: true
+  # Number of parallel workers
+  num_workers: 1
+  # Verbose output
+  verbose: true
+
+  # Training/Evaluation split
+  train_split: 0.8
+
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 3
+    metric: "mean_reward"
+
+# Logging Configuration
+logging:
+  level: "INFO" # DEBUG, INFO, WARNING, ERROR
+  log_file: "experiment.log"
+  tensorboard: true
+  tensorboard_dir: "./runs"
+  wandb:
+    enabled: false
+    project: "gspo-utg"
+    entity: "" # your wandb username
