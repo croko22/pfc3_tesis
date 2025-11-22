@@ -1,39 +1,69 @@
-# Core dependencies
-torch>=2.0.0
-transformers>=4.35.0
-peft>=0.6.0
-accelerate>=0.24.0
+# ============================================================================
+# REQUIREMENTS - Metodología de Tesis
+# ============================================================================
+# Test Generation + LLM Refinement + Evaluation Pipeline
+# 
+# Instalación:
+#   pip install -r requirements.txt
+#
+# Nota: Las dependencias de RL/LLM training (torch, transformers, etc.) 
+#       se moverán a un repositorio separado. Este repo se enfoca en
+#       test generation, refinement y evaluation.
+# ============================================================================
 
-# Data processing
+# ----------------------------------------------------------------------------
+# CORE - Análisis y Procesamiento de Datos
+# ----------------------------------------------------------------------------
 numpy>=1.24.0
 pandas>=2.0.0
 pyyaml>=6.0
 
-# Java code analysis
-javalang>=0.13.0
-
-# Code quality
-scikit-learn>=1.3.0
-
-# Logging and monitoring
-tensorboard>=2.14.0
-wandb>=0.16.0
-
-# Utilities
-tqdm>=4.65.0
+# ----------------------------------------------------------------------------
+# VISUALIZACIÓN - Gráficas para Paper/Tesis
+# ----------------------------------------------------------------------------
 matplotlib>=3.7.0
 seaborn>=0.12.0
 
-# Development
+# ----------------------------------------------------------------------------
+# ESTADÍSTICA - Tests y Análisis
+# ----------------------------------------------------------------------------
+scipy>=1.11.0              # Wilcoxon, Mann-Whitney, effect size
+
+# ----------------------------------------------------------------------------
+# UTILIDADES
+# ----------------------------------------------------------------------------
+tqdm>=4.65.0               # Progress bars
+
+# ----------------------------------------------------------------------------
+# ANÁLISIS DE CÓDIGO JAVA
+# ----------------------------------------------------------------------------
+javalang>=0.13.0           # Parse código Java (opcional para análisis)
+
+# ----------------------------------------------------------------------------
+# DESARROLLO (Opcional)
+# ----------------------------------------------------------------------------
 pytest>=7.4.0
 black>=23.0.0
 flake8>=6.0.0
-mypy>=1.5.0
 
-# Optional: Quantization support
-bitsandbytes>=0.41.0; platform_system != "Windows"
-scipy>=1.11.0
+# ============================================================================
+# DEPENDENCIAS DE LLM (si usas LLM local)
+# ============================================================================
+# Si usas OpenAI/Anthropic: descomenta lo que necesites
+# openai>=1.0.0
+# anthropic>=0.7.0
 
-# Documentation
-sphinx>=7.0.0
-sphinx-rtd-theme>=1.3.0
+# Si usas LLM local (Llama, CodeLlama, etc.): descomenta
+# torch>=2.0.0
+# transformers>=4.35.0
+# peft>=0.6.0
+# accelerate>=0.24.0
+# bitsandbytes>=0.41.0; platform_system != "Windows"
+
+# ============================================================================
+# NOTAS
+# ============================================================================
+# - Java 8 requerido (instalar con sistema operativo)
+# - EvoSuite 1.2.0 requerido (incluido en lib/)
+# - JaCoCo requerido (incluido en lib/)
+# - PIT requerido (descargar con setup_methodology.py)

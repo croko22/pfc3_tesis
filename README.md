@@ -1,107 +1,211 @@
-# GSPO-based Unit Test Generation and Refinement
+# 🎓 Test Generation + LLM Refinement# GSPO-based Unit Test Generation and Refinement
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+
+
+Metodología completa de investigación para mejora de tests automáticos mediante LLM.[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
 
 ## Overview
 
+## 🚀 Quick Start
+
 This project implements a novel hybrid approach to automatic unit test generation that combines the strengths of traditional search-based methods (EvoSuite) with modern large language models (LLMs) optimized using Group Sequence Policy Optimization (GSPO).
 
-### Key Features
+```bash
+
+# 1. Ver estado del proyecto### Key Features
+
+python scripts/setup/status.py
 
 - **Hybrid Test Generation**: EvoSuite generates initial high-coverage tests, LLM refines them for maintainability
-- **GSPO Optimization**: Stable reinforcement learning training using sequence-level importance sampling
-- **LoRA Integration**: Efficient fine-tuning with Low-Rank Adaptation
+
+# 2. Test rápido (1 clase, 60s)- **GSPO Optimization**: Stable reinforcement learning training using sequence-level importance sampling
+
+python scripts/testing/quick_test.py- **LoRA Integration**: Efficient fine-tuning with Low-Rank Adaptation
+
 - **Multi-Objective Reward**: Balances test effectiveness (coverage, mutation score) and maintainability (smells, complexity)
-- **Defects4J Benchmark**: Comprehensive evaluation on real-world bugs
 
-## Architecture
+# 3. Pipeline completo (10 clases, 30 min)- **Defects4J Benchmark**: Comprehensive evaluation on real-world bugs
 
-```
+python scripts/pipeline/run_pipeline.py --limit 10
+
+```## Architecture
+
+
+
+---```
+
 ┌─────────────────┐
-│  Defects4J      │
+
+## 📁 Estructura│  Defects4J      │
+
 │  Benchmark      │
-└────────┬────────┘
-         │
-         v
-┌─────────────────┐
-│  EvoSuite       │
+
+```└────────┬────────┘
+
+scripts/         │
+
+  pipeline/      → Pipeline completo de 5 fases         v
+
+  testing/       → Tests rápidos y validación┌─────────────────┐
+
+  setup/         → Setup y verificación│  EvoSuite       │
+
 │  Test Generator │
-└────────┬────────┘
-         │ Initial Tests (High Coverage)
-         v
+
+docs/└────────┬────────┘
+
+  guides/        → Guías principales (LEE PRIMERO)         │ Initial Tests (High Coverage)
+
+  legacy/        → Docs/código viejo (ignorar)         v
+
 ┌─────────────────┐
-│  LLM Refiner    │
-│  (GSPO + LoRA)  │
+
+data/            → Benchmarks (SF110 + Extended DynaMOSA)│  LLM Refiner    │
+
+lib/             → Librerías Java (EvoSuite, JaCoCo, JUnit)│  (GSPO + LoRA)  │
+
 └────────┬────────┘
-         │ Refined Tests (High Maintainability)
-         v
-┌─────────────────┐
-│  Evaluator      │
-│  (Metrics)      │
-└─────────────────┘
+
+baseline_tests/  → Outputs del pipeline         │ Refined Tests (High Maintainability)
+
+refined_tests/         v
+
+valid_tests/┌─────────────────┐
+
+evaluation_results/│  Evaluator      │
+
+figures/│  (Metrics)      │
+
+```└─────────────────┘
+
 ```
+
+---
 
 ## Installation
 
+## 📖 Documentación
+
 ### Prerequisites
 
-- Python 3.8 or higher
-- Java 8 or higher (for EvoSuite and Defects4J)
-- CUDA-capable GPU (recommended) or CPU
+**Lee en orden**:
+
+1. `docs/guides/START_HERE.md` - Guía rápida- Python 3.8 or higher
+
+2. `docs/guides/CHECKLIST.md` - TODOs pendientes- Java 8 or higher (for EvoSuite and Defects4J)
+
+3. `docs/guides/METHODOLOGY.md` - Metodología completa- CUDA-capable GPU (recommended) or CPU
+
 - Git
+
+**Resumen**: `README_ORGANIZED.md`
 
 ### 1. Clone the Repository
 
+---
+
 ```bash
-git clone https://github.com/yourusername/gspo_utg_tesis.git
+
+## 🧹 Limpiezagit clone https://github.com/yourusername/gspo_utg_tesis.git
+
 cd gspo_utg_tesis
-```
 
-### 2. Install Python Dependencies
+```bash```
 
-```bash
-# Create virtual environment
-python -m venv venv
+# Ver qué está organizado
+
+cat README_ORGANIZED.md### 2. Install Python Dependencies
+
+
+
+# Limpiar archivos viejos/innecesarios```bash
+
+./cleanup.sh# Create virtual environment
+
+```python -m venv venv
+
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
+---
+
 # Install dependencies
-pip install -r requirements.txt
+
+## 🎯 Scripts Principalespip install -r requirements.txt
+
 ```
 
-### 3. Install External Tools
+| Script | Uso | Tiempo |
 
-#### Defects4J
+|--------|-----|--------|### 3. Install External Tools
+
+| `scripts/setup/status.py` | Ver estado | 1s |
+
+| `scripts/testing/quick_test.py` | Test 1 clase | 1 min |#### Defects4J
+
+| `scripts/pipeline/run_pipeline.py` | Pipeline completo | Variable |
 
 ```bash
-# Clone and setup Defects4J
+
+---# Clone and setup Defects4J
+
 git clone https://github.com/rjust/defects4j.git /path/to/defects4j
-cd /path/to/defects4j
+
+## ⚠️ TODOs Pendientescd /path/to/defects4j
+
 ./init.sh
 
-# Add to PATH
-export PATH="/path/to/defects4j/framework/bin:$PATH"
+1. Conectar LLM en `phase2_llm_refinement.py`
+
+2. Implementar PIT en `phase4_evaluation.py`# Add to PATH
+
+3. Implementar JaCoCo en `phase4_evaluation.py`export PATH="/path/to/defects4j/framework/bin:$PATH"
+
 ```
+
+Ver: `docs/guides/CHECKLIST.md`
 
 #### EvoSuite
 
+---
+
 ```bash
-# Download EvoSuite
+
+## 📊 Pipeline de 5 Fases# Download EvoSuite
+
 wget https://github.com/EvoSuite/evosuite/releases/download/v1.2.0/evosuite-master-1.2.0.jar
-mv evosuite-master-1.2.0.jar /path/to/evosuite/
-```
 
-#### PIT (Mutation Testing - Optional)
+```mv evosuite-master-1.2.0.jar /path/to/evosuite/
 
-```bash
-# Download PIT
-wget https://github.com/hcoles/pitest/releases/download/pitest-parent-1.14.2/pitest-command-line-1.14.2.jar
+T_base → T_refined → T_valid → Métricas → Gráficas```
+
+ (1)       (2)        (3)        (4)        (5)
+
+```#### PIT (Mutation Testing - Optional)
+
+
+
+**Estado**:```bash
+
+- ✅ Fase 1, 3, 5: COMPLETAS# Download PIT
+
+- ⚠️ Fase 2, 4: TEMPLATES (implementar TODOs)wget https://github.com/hcoles/pitest/releases/download/pitest-parent-1.14.2/pitest-command-line-1.14.2.jar
+
 mv pitest-command-line-1.14.2.jar /path/to/pit/
-```
 
-### 4. Configure the Project
+---```
 
-Edit `config.yml` to set your paths:
+
+
+**README viejo**: `README_OLD.md`  ### 4. Configure the Project
+
+**Fecha**: 2024-11-16  
+
+**Versión**: 1.0 (Organizada)Edit `config.yml` to set your paths:
+
 
 ```yaml
 paths:
