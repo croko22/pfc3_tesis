@@ -1,0 +1,38 @@
+paths:
+  sf110_home: "data/SF110-binary"
+  extended_dynamosa_home: "data/extended-dynamosa-repos-binary"
+  evosuite_jar: "lib/evosuite-1.2.0.jar"
+  pit_jar: "lib/pitest-command-line.jar"
+  workspace: "./workspace"
+  output_dir: "./results"
+  checkpoints_dir: "./checkpoints"
+
+llm:
+  model_name: "codellama/CodeLlama-7b-Instruct-hf"
+  use_lora: true
+  lora:
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+  device: "cuda"
+  generation:
+    max_new_tokens: 512
+    temperature: 0.2
+    top_p: 0.95
+
+gspo:
+  learning_rate: 1.0e-5
+  num_epochs: 3
+  batch_size: 8
+  clip_ratio: 0.2
+  kl_coef: 0.1
+
+reward:
+  weights:
+    test_smells: -0.3
+    cyclomatic_complexity: -0.2
+    readability: 0.15
+    branch_coverage: 0.25
+    mutation_score: 0.25
+    compilation: 0.15
+  failure_penalty: -1.0

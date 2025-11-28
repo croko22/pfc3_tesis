@@ -8,11 +8,18 @@ Este es tu CONTROL para los experimentos.
 Output:
   - generated_tests/baseline/ con todos los tests
   - baseline_metrics.json con cobertura y mutación inicial
+
+Usage:
+  python phase1_generate_baseline.py              # 10 clases (modo prueba)
+  python phase1_generate_baseline.py --limit 50   # 50 clases
+  python phase1_generate_baseline.py --full       # TODO el SF110
 """
 
 import csv
 import json
 import subprocess
+import argparse
+import os
 from pathlib import Path
 from datetime import datetime
 import time
@@ -102,6 +109,13 @@ def main():
     FASE 1: Genera T_base para SF110
     """
     
+    # Parsear argumentos
+    parser = argparse.ArgumentParser(description="Fase 1: Generación de baseline con EvoSuite")
+    parser.add_argument('--limit', type=int, help='Número de clases a procesar')
+    parser.add_argument('--full', action='store_true', help='Procesar todas las clases del SF110')
+    parser.add_argument('--time-budget', type=int, default=60, help='Segundos por clase (default: 60)')
+    args = parser.parse_args()
+    
     print("="*80)
     print("FASE 1: GENERACIÓN DE LÍNEA BASE (T_base)")
     print("="*80)
@@ -119,13 +133,23 @@ def main():
         reader = csv.DictReader(f)
         classes = list(reader)
     
-    # CONFIGURACIÓN
-    LIMIT = 10  # Para prueba, None para todos
-    TIME_BUDGET = 60  # segundos por clase
+    # CONFIGURACIÓN: prioridad args > env var > default
+    if args.full:
+        LIMIT = None
+    elif args.limit:
+        LIMIT = args.limit
+    elif os.getenv('LIMIT'):
+        LIMIT = int(os.getenv('LIMIT'))
+    else:
+        LIMIT = 10  # Default para prueba
+    
+    TIME_BUDGET = args.time_budget
     
     if LIMIT:
         classes = classes[:LIMIT]
         print(f"⚠️  MODO PRUEBA: Solo {LIMIT} clases")
+    else:
+        print(f"🚀 MODO COMPLETO: {len(classes)} clases")
     
     print(f"📊 Total a procesar: {len(classes)} clases")
     print(f"⏱️  Budget: {TIME_BUDGET}s por clase\n")
