@@ -33,3 +33,6 @@ valid_tests/
 generated_tests/
 docs/
 temp_tests/
+evosuite-report/
+#temporal
+evaluation_results/ 
